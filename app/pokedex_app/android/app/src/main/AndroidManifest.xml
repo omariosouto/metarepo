@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.pokedex_app">
+    package="com.mariosouto.pokedex_app">
    <application
         android:label="pokedex_app"
         android:icon="@mipmap/ic_launcher">
