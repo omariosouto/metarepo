@@ -1,6 +1,9 @@
 import { ApolloServer, gql, makeExecutableSchema } from 'apollo-server-micro'
 import { PokemonsRepository } from '../../modules/pokemons/repository'
 
+
+const pokemonsRepository = PokemonsRepository();
+
 const typeDefs = gql`
   type Query {
     pokemons: [Pokemon!]!
@@ -9,16 +12,17 @@ const typeDefs = gql`
   type Pokemon {
     id: String
     name: String
+    image: String
   }
 `
 
 const resolvers = {
   Query: {
-    pokemons() {
-      return PokemonsRepository().getAll();
+    async pokemons() {
+      return pokemonsRepository.getAll();
     },
-    pokemon(_, { id }) {
-      return PokemonsRepository().getById(id);
+    async pokemon(_, { id }) {
+      return pokemonsRepository.getById(id);
     },
   },
 }
