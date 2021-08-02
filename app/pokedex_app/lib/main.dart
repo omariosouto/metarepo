@@ -8,11 +8,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Pokedex',
+      title: 'Pokedex App',
       theme: ThemeData(
         primarySwatch: Colors.red,
       ),
-      home: MyHomePage(title: 'Pokedex'),
+      home: MyHomePage(title: 'Pokedex By: DevSoutinho'),
     );
   }
 }
@@ -27,7 +27,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  int _counter = 20;
 
   void _incrementCounter() {
     setState(() {
@@ -46,7 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Aaaa',
+              'Initial amount of pokemons supported',
             ),
             Text(
               '[$_counter]',
