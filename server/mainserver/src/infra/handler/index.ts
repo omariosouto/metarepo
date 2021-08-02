@@ -25,6 +25,10 @@ const resolvers = {
 
 export const schema = makeExecutableSchema({ typeDefs, resolvers })
 
-export const handler = new ApolloServer({ schema }).createHandler({
+export const handler = new ApolloServer({
+  schema,
+  introspection: true,
+  playground: true,
+}).createHandler({
   path: '/api/graphql',
 })
