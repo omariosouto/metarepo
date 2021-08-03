@@ -18,7 +18,8 @@ function outputPokemon({ pokemon, id }): IPokemon {
 export function PokemonsRepository() {
   const result = {
     async getAll(): Promise<IPokemon[]> {
-      return httpClient('https://pokeapi.co/api/v2/pokemon')
+      const total = 151;
+      return httpClient(`https://pokeapi.co/api/v2/pokemon?limit=${total}&offset=0`)
         .then((response) => {
           const res = response.results.map(async (_, index) => {
             const id = index + 1;
