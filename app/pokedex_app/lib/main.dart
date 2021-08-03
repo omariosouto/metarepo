@@ -147,6 +147,9 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
+final List<String> entries = <String>['A', 'B', 'C'];
+final List<int> colorCodes = <int>[600, 500, 100];
+
 class _MyHomePageState extends State<MyHomePage> {
   late Future<List<Pokemon>> futureAlbum;
 
@@ -162,38 +165,26 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              FutureBuilder<List<Pokemon>>(
-                future: futureAlbum,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Column(
-                        children: snapshot.data!
-                            .map(
-                              (pokemon) => PokemonCard(
-                                id: pokemon.id,
-                                image: pokemon.image,
-                                title: pokemon.name,
-                              ),
-                            )
-                            .toList());
-                  }
-
-                  if (snapshot.hasError) {
-                    return Text('${snapshot.error}');
-                  }
-
-                  return const CircularProgressIndicator();
+      body: FutureBuilder<List<Pokemon>>(
+          future: futureAlbum,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, int index) {
+                  var pokemon = snapshot.data![index];
+                  return PokemonCard(
+                    id: pokemon.id,
+                    title: pokemon.name,
+                    image: pokemon.image,
+                  );
                 },
-              ),
-            ],
-          ),
-        ),
-      ),
+              );
+            }
+
+            if (snapshot.hasError) return Text('${snapshot.error}');
+            return const CircularProgressIndicator();
+          }),
     );
   }
 }
