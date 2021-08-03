@@ -73,7 +73,6 @@ class PokemonCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 300,
-      height: 300,
       margin: const EdgeInsets.only(top: 20),
       decoration: BoxDecoration(
         color: Colors.grey[200],
@@ -100,6 +99,16 @@ class PokemonCard extends StatelessWidget {
             child: Text(
               id + ': ' + capitalize(title),
               textAlign: TextAlign.left,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: ElevatedButton(
+              onPressed: () {
+                // Navigate back to first screen when tapped.
+                Navigator.pushNamed(context, '/details');
+              },
+              child: Text('Ver detalhes'),
             ),
           ),
           Center(
@@ -133,7 +142,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.red,
       ),
-      home: MyHomePage(title: 'Pokedex By: DevSoutinho'),
+      // home: MyHomePage(title: 'Pokedex By: DevSoutinho'),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => MyHomePage(title: 'Pokedex By: DevSoutinho'),
+        '/details': (context) => DetailsScreen(),
+      },
     );
   }
 }
@@ -185,6 +199,28 @@ class _MyHomePageState extends State<MyHomePage> {
             if (snapshot.hasError) return Text('${snapshot.error}');
             return const CircularProgressIndicator();
           }),
+    );
+  }
+}
+
+class DetailsScreen extends StatelessWidget {
+  const DetailsScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Second Screen'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            // Navigate back to first screen when tapped.
+            Navigator.pop(context);
+          },
+          child: const Text('Go back!'),
+        ),
+      ),
     );
   }
 }
