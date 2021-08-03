@@ -26,9 +26,6 @@ class Pokemon {
 }
 
 Future<List<Pokemon>> fetchPokemon() async {
-  final response = await http
-      .get(Uri.parse('https://jsonplaceholder.typicode.com/albums/1'));
-
   final apiResponse = await http.post(
     Uri.parse('https://metarepo.vercel.app/api/graphql'),
     headers: {'Content-Type': 'application/json'},
@@ -45,14 +42,80 @@ Future<List<Pokemon>> fetchPokemon() async {
     }),
   );
 
-  if (response.statusCode == 200) {
+  if (apiResponse.statusCode == 200) {
     final pokemonsFromServer =
         jsonDecode(apiResponse.body)['data']['pokemons'] as List<dynamic>;
+
+    // debugPrint('$pokemonsFromServer');
+
     return pokemonsFromServer
         .map((pokemon) => Pokemon.fromJson(pokemon))
         .toList();
   } else {
     throw Exception('Failed to load album');
+  }
+}
+
+// ===========================================
+// [ Components ] ============================
+class PokemonCard extends StatelessWidget {
+  final String id;
+  final String title;
+  final String image;
+
+  const PokemonCard({
+    Key? key,
+    required this.title,
+    required this.id,
+    required this.image,
+  }) : super(key: key);
+
+  Widget build(BuildContext context) {
+    return Container(
+      width: 300,
+      height: 300,
+      margin: const EdgeInsets.only(top: 20),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(10),
+          topRight: Radius.circular(10),
+          bottomLeft: Radius.circular(10),
+          bottomRight: Radius.circular(10),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 5,
+            blurRadius: 7,
+            offset: Offset(0, 3), // changes position of shadow
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Text(
+              id + ': ' + capitalize(title),
+              textAlign: TextAlign.left,
+            ),
+          ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Image.network(
+                image,
+                width: 200,
+                height: 200,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -100,39 +163,35 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            FutureBuilder<List<Pokemon>>(
-              future: futureAlbum,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Column(
-                    children: snapshot.data!
-                        .map((pokemon) => Row(
-                              children: <Widget>[
-                                Text(pokemon.id),
-                                Image.network(
-                                  pokemon.image,
-                                  width: 200,
-                                  height: 200,
-                                  fit: BoxFit.contain,
-                                ),
-                                Text(capitalize(pokemon.name)),
-                              ],
-                            ))
-                        .toList(),
-                  );
-                }
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              FutureBuilder<List<Pokemon>>(
+                future: futureAlbum,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Column(
+                        children: snapshot.data!
+                            .map(
+                              (pokemon) => PokemonCard(
+                                id: pokemon.id,
+                                image: pokemon.image,
+                                title: pokemon.name,
+                              ),
+                            )
+                            .toList());
+                  }
 
-                if (snapshot.hasError) {
-                  return Text('${snapshot.error}');
-                }
+                  if (snapshot.hasError) {
+                    return Text('${snapshot.error}');
+                  }
 
-                return const CircularProgressIndicator();
-              },
-            ),
-          ],
+                  return const CircularProgressIndicator();
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
